@@ -1,11 +1,18 @@
 #! /bin/sh
-# appLariats generic tomcat build script
-# Requirements - A valid war file exists within the code_dir
-# Copies the war file from the code_dir and copies it into /usr/local/tomcat/webapps
+# appLariats generic haproxy build script
+# Requirements - A valid haproxy.cfg file exists within the /src/conf/
+# Copies the haproxy.cfg file from the /src/conf/ and copies it into /usr/local/etc/haproxy/haproxy.cfg
 
-#TO DO - Add an if to check for file and throw error if not present
+#Log everything in /src/build.log
+logfile=/src/build.log
+exec > $logfile 2>&1
+set -x
 
-if [ -e $artifact_root/src/haproxy.cfg ]
+#Check for haproxy.cfg and throw exception if not present
+if [ -e /src/conf/haproxy.cfg ]
 then
-    cp -f $artifact_root/src/haproxy.cfg /usr/local/etc/haproxy/haproxy.cfg
+    cp -f /src/conf/haproxy.cfg /usr/local/etc/haproxy/haproxy.cfg
+else
+    echo "ERROR! haproxy.cfg not found"
+    exit 1
 fi
