@@ -1,18 +1,22 @@
 #! /bin/sh
 # appLariats generic haproxy build script
-# Requirements - A valid haproxy.cfg file exists within the /src/conf/
-# Copies the haproxy.cfg file from the /src/conf/ and copies it into /usr/local/etc/haproxy/haproxy.cfg
 
 #Log everything in /src/build.log
-logfile=/src/build.log
+logfile=/code/build.log
 exec > $logfile 2>&1
 set -x
 
-#Check for haproxy.cfg and throw exception if not present
-if [ -e /src/conf/haproxy.cfg ]
+#check inside code artifact for /code/haproxy-conf/haproxy.cfg and use it if exists
+#customizing haproxy through providing haproxy-conf/haproxy.cfg as part of the code artifact
+if [ -e /code/haproxy-conf/haproxy.cfg ]
 then
-    cp -f /src/conf/haproxy.cfg /usr/local/etc/haproxy/haproxy.cfg
+ cp -f /code/haproxy-conf/haproxy.cfg /usr/local/etc/haproxy/
 else
-    echo "ERROR! haproxy.cfg not found"
-    exit 1
+ #look inside /conf for haproxy.cfg and use it if exists
+ #customizing haproxy through cloning this github repo and providing conf/haproxy.cfg
+ if [ -e /conf/haproxy.cfg ]
+ then
+  cp -f /conf/haproxy.cfg /usr/local/etc/haproxy/
+ fi
+ #if non of the above, default config file inside the image will be used
 fi
