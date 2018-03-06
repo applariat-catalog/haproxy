@@ -2,11 +2,10 @@ FROM haproxy:latest
 
 ARG artifact_root="."
 
-COPY $artifact_root/build.sh /build.sh
 COPY $artifact_root/entrypoint.sh /entrypoint.sh
-#COPY $artifact_root/conf/ /conf/
-COPY $artifact_root/code/ /code/
-
-RUN chmod +x /build.sh /entrypoint.sh && /build.sh
+RUN chmod +x /entrypoint.sh  
+COPY $artifact_root/code/ /conf/
 
 ENTRYPOINT ["/entrypoint.sh"]
+
+CMD ["haproxy", "-f", "/usr/local/etc/haproxy/haproxy.cfg"]
